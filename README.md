@@ -1,0 +1,1 @@
+# A drools learning project
