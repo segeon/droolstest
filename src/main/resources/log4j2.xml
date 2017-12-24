@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="60">
+    <Properties>
+        <!-- <Property name="layout">%d{yyyy-MM-dd HH:mm:ss.SSS/zzz} %-5p [%t] %c{22} - %m%n</Property> -->
+        <Property name="layout">%d{yyyy-MM-dd HH:mm:ss} %-5p --- [%t] [%X{appNo}] %c{22}: %m%n</Property>
+        <Property name="log-dir">/home/finance/Logs/luma.msxf.lo</Property>
+        <!--%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n-->
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layout}"/>
+        </Console>
+       <!--  <RollingFile name="RollingTraceFile" filename="${log-dir}/LUMA-trace.log"
+                     filepattern="${log-dir}/LUMA-trace-%d{yyyy-MM-dd-HH}_%i.log" encoding="UTF-8"> -->
+         <RollingFile name="RollingTraceFile" filename="${log-dir}/all.log"
+                     filepattern="${log-dir}/all-%d{yyyy-MM-dd-HH}_%i.log">
+            <PatternLayout pattern="${layout}"/>
+            <Policies>
+                <OnStartupTriggeringPolicy minSize="1"/>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100" fileIndex = "max"/>
+        </RollingFile>
+        <!-- <RollingFile name="RollingErrorFile" filename="${log-dir}/LUMA-error.log"
+                     filepattern="${log-dir}/LUMA-error-%d{yyyy-MM-dd-HH}_%i.log" encoding="UTF-8"> -->
+        <RollingFile name="RollingErrorFile" filename="${log-dir}/error.log"
+                     filepattern="${log-dir}/error-%d{yyyy-MM-dd-HH}_%i.log">
+            <PatternLayout pattern="${layout}"/>
+            <Policies>
+                <OnStartupTriggeringPolicy minSize="1"/>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <Async name="AsyncRollingTraceFile">
+            <AppenderRef ref="RollingTraceFile"/>
+        </Async>
+
+        <Async name="AsyncRollingErrorFile">
+            <AppenderRef ref="RollingErrorFile"/>
+        </Async>
+		
+		<!-- elk日志 -->
+		<RollingFile name="ElkRollingFile" filename="${log-dir}/business/business-2de.log"
+			filepattern="${log-dir}/business/business-2de.log.%d{yyyy-MM-dd}.%i" >
+			<PatternLayout pattern="%msg%n" />
+			<Policies>
+				<OnStartupTriggeringPolicy minSize="1" />
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="1024 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="100" />
+		</RollingFile>
+		
+		<Async name="AsyncElkRollingFile">
+			<AppenderRef ref="ElkRollingFile" />
+		</Async>
+		
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

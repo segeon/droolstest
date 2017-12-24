@@ -1,0 +1,20 @@
+package rules;
+dialect  "mvel"
+import com.msxf.droolstest.Application
+import com.msxf.droolstest.Goods
+global java.util.List list
+
+rule "appl"
+    when $a: Application(loanAmount > 10000)
+    then
+        System.out.printf("loan amount" + $a.getLoanAmount() +" is too large！");
+        $a.setApproved(false);
+        $a.setLoanAmount($a.getLoanAmount() - 1000);
+end
+
+rule "goods"
+    when $g: Goods(price > 5000)
+    then
+        System.out.printf("price is too high!");
+        $g.setApproved(false);
+end

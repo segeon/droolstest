@@ -1,0 +1,47 @@
+package rules;
+dialect  "mvel"
+import com.msxf.droolstest.Fire
+import com.msxf.droolstest.Room
+import com.msxf.droolstest.Alarm
+import com.msxf.droolstest.Sprinkler
+
+rule "fireAlarm"
+    when
+        Fire($room : room)
+        $sprinkler : Sprinkler(room == $room, on == false)
+    then
+        System.out.println("Turn on the sprinkler for room " + $room.getName());
+end
+
+rule "when fire is gone, turn off the sprinkler"
+    when
+        $sprinkler : Sprinkler($room : room, on == true)
+        not Fire(room == $room)
+    then
+        System.out.println("Turn off the sprinkler for room " + $room.getName());
+end
+
+rule "raise the alarm when fire exist"
+    when
+        exists Fire()
+    then
+        insert( new Alarm() )
+        System.out.println("Raise the alarm");
+end
+
+rule "cancel the alarm when fire is gone"
+    when
+        not Fire()
+        $alarm : Alarm()
+    then
+        delete($alarm);
+        System.out.println("cancel the alarm");
+end
+
+rule "show status when everything is ok"
+    when
+        not Fire()
+        not Sprinkler(on == true)
+    then
+        System.out.println( "Everything is ok" );
+end
